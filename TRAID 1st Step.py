@@ -19,8 +19,8 @@ def crear_base_datos():
                  usuario TEXT UNIQUE,
                  email TEXT UNIQUE,
                  contrasena TEXT,
-                 kyc_completed INTEGER,
-                 risk_completed INTEGER)''')
+                 kyc_completed INTEGER DEFAULT 0,
+                 risk_completed INTEGER DEFAULT 0)''')
     conn.commit()
     conn.close()
 
@@ -31,7 +31,7 @@ def registrar_usuario(usuario, email, contrasena):
     conn = sqlite3.connect("usuarios.db")
     c = conn.cursor()
     try:
-        c.execute("INSERT INTO usuarios (usuario, email, contrasena, kyc_completed, risk_completed) VALUES (?, ?, ?, 0, 0)",
+        c.execute("INSERT INTO usuarios (usuario, email, contrasena) VALUES (?, ?, ?)",
                   (usuario, email, encriptar_contrasena(contrasena)))
         conn.commit()
         st.session_state.email = email
@@ -165,7 +165,7 @@ def main():
             if st.button("Iniciar Sesión"):
                 user = verificar_usuario(usuario, contrasena)
                 if user:
-                    st.session_state.email = user[2]  # Guardamos el email por si hace falta luego
+                    st.session_state.email = user[2]
                     st.session_state.step = "Dashboard"
                 else:
                     st.error("Credenciales incorrectas")
@@ -193,3 +193,10 @@ def main():
         formulario_riesgo()
     elif st.session_state.step == "Dashboard":
         dashboard()
+    else:
+        st.error("Algo salió mal. Estado de sesión:")
+        st.write(st.session_state)
+
+if __name__ == '__main__':
+    main()
+    
