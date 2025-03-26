@@ -8,7 +8,7 @@ import sqlite3
 import hashlib
 from datetime import date
 
-st.set_page_config(page_title="TRAID", layout="centered")
+st.set_page_config(page_title="TRAID", layout="wide")
 
 # ---------------------- DB ----------------------
 def crear_base_datos():
@@ -137,9 +137,21 @@ def formulario_riesgo():
 
 # ----------------- DASHBOARD -----------------
 def dashboard():
-    st.title("Bienvenido a TRAID")
-    st.success("Has completado el registro y perfilamiento.")
-    st.info("Aquí irá tu panel de análisis e inversión.")
+    st.sidebar.title("TRAID")
+    menu = [
+        "Resumen",
+        "Información del Usuario",
+        "Documentos",
+        "Análisis",
+        "Carteras",
+        "Operaciones",
+        "Propuestas",
+        "Alertas"
+    ]
+    opcion = st.sidebar.radio("Menú", menu)
+
+    st.title(opcion)
+    st.write("(Contenido en desarrollo...)")
 
 # ------------------- INICIO -------------------
 def main():
@@ -199,3 +211,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
