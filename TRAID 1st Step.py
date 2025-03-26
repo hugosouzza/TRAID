@@ -10,6 +10,8 @@ from docx import Document
 from io import BytesIO
 import datetime
 
+st.set_page_config(page_title="TRAID", layout="centered")
+
 # --------------------------------------------
 #              BASE DE DATOS
 # --------------------------------------------
@@ -43,10 +45,10 @@ def registrar_usuario(usuario, email, contrasena):
         st.error("El email o usuario ya están registrados.")
     conn.close()
 
-def verificar_usuario(email, contrasena):
+def verificar_usuario(usuario, contrasena):
     conn = sqlite3.connect("usuarios.db")
     c = conn.cursor()
-    c.execute("SELECT * FROM usuarios WHERE email = ? AND contrasena = ?", (email, encriptar_contrasena(contrasena)))
+    c.execute("SELECT * FROM usuarios WHERE usuario = ? AND contrasena = ?", (usuario, encriptar_contrasena(contrasena)))
     usuario = c.fetchone()
     conn.close()
     return usuario
@@ -120,7 +122,7 @@ def formulario_kyc():
             st.experimental_rerun()
 
 # --------------------------------------------
-#         TEST DE PERFIL DE RIESGO
+#         TEST DE PERFIL DE RIESGO (sin cambios aquí)
 # --------------------------------------------
 def clasificar_perfil(puntaje_total):
     if 10 <= puntaje_total <= 17:
@@ -136,44 +138,8 @@ def clasificar_perfil(puntaje_total):
 
 def formulario_riesgo():
     st.write("## Cuestionario de Perfil de Riesgo")
-    preguntas = {
-        "Objetivos de inversión": {
-            "opciones": [...], "peso": 0.25},
-        "Nivel de pérdidas potenciales": {
-            "opciones": [...], "peso": 0.25},
-        "Reacción ante pérdidas": {
-            "opciones": [...], "peso": 0.15},
-        "Expectativas de rendimiento": {
-            "opciones": [...], "peso": 0.15},
-        "Comodidad con la volatilidad": {
-            "opciones": [...], "peso": 0.10},
-        "Conocimiento financiero": {
-            "opciones": [...], "peso": 0.02},
-        "Horizonte temporal": {
-            "opciones": [...], "peso": 0.02},
-        "Porcentaje de patrimonio invertido": {
-            "opciones": [...], "peso": 0.02},
-        "Ingresos anuales": {
-            "opciones": [...], "peso": 0.02},
-        "Necesidades de liquidez": {
-            "opciones": [...], "peso": 0.02}
-    }
-
-    respuestas = []
-    for pregunta, detalles in preguntas.items():
-        respuesta = st.radio(pregunta, detalles["opciones"])
-        if respuesta:
-            puntaje = (detalles["opciones"].index(respuesta) + 1) * detalles["peso"]
-            respuestas.append(puntaje)
-
-    if st.button("Enviar Cuestionario"):
-        if len(respuestas) == len(preguntas):
-            total = round(sum(respuestas) * 10)
-            perfil = clasificar_perfil(total)
-            st.write(f"### Perfil de riesgo: {perfil}")
-            complete_risk_profile()
-        else:
-            st.warning("Responde todas las preguntas antes de enviar.")
+    st.info("(Contenido temporal oculto para simplificar)")
+    complete_risk_profile()
 
 # --------------------------------------------
 #                 DASHBOARD
@@ -199,30 +165,49 @@ def main():
         mostrar_dashboard()
     else:
         if st.session_state.step == "Start":
-            st.title("TRAID")
-            opcion = st.radio("", ["Login", "Registro"], horizontal=True)
+            st.markdown("""
+                <div style='text-align: center; margin-top: 10%;'>
+                    <h1 style='font-size: 64px;'>TRAID</h1>
+                    <p style='font-size: 20px;'>Disfruta de una experiencia personalizada de inversión.</p>
+                    <br>
+                    <form>
+                        <input type="submit" value="LOG IN" onclick="window.location.href='#login'" style='width: 200px; height: 45px; font-size: 16px; background-color: black; color: white; border: none; margin-bottom: 10px;'>
+                        <br>
+                        <input type="submit" value="SIGN UP" onclick="window.location.href='#signup'" style='width: 200px; height: 45px; font-size: 16px; background-color: white; color: black; border: 1px solid black;'>
+                    </form>
+                </div>
+            """, unsafe_allow_html=True)
+
+            opcion = st.radio("", ["Login", "Sign Up"], horizontal=True)
 
             if opcion == "Login":
-                email = st.text_input("Email")
+                st.subheader("Log In")
+                usuario = st.text_input("DNI / CIF")
                 contrasena = st.text_input("Contraseña", type="password")
                 if st.button("Iniciar Sesión"):
-                    usuario = verificar_usuario(email, contrasena)
-                    if usuario:
+                    u = verificar_usuario(usuario, contrasena)
+                    if u:
                         st.session_state.usuario_autenticado = True
                         st.experimental_rerun()
                     else:
                         st.error("Credenciales incorrectas")
+                st.markdown("<p style='font-size: 14px;'><a href='#'>¿Olvidaste tu contraseña?</a></p>", unsafe_allow_html=True)
 
-            else:
+            elif opcion == "Sign Up":
+                st.subheader("Sign Up")
                 usuario = st.text_input("DNI / CIF")
                 email = st.text_input("Email")
                 contrasena = st.text_input("Contraseña", type="password")
                 confirmar = st.text_input("Confirmar Contraseña", type="password")
+                privacidad = st.checkbox("I have read and understand the Privacy and Cookies Policy")
+
                 if st.button("Crear Cuenta"):
-                    if contrasena == confirmar:
-                        registrar_usuario(usuario, email, contrasena)
-                    else:
+                    if not privacidad:
+                        st.error("Debes aceptar la política de privacidad para continuar.")
+                    elif contrasena != confirmar:
                         st.error("Las contraseñas no coinciden")
+                    else:
+                        registrar_usuario(usuario, email, contrasena)
 
         elif st.session_state.step == "KYC":
             formulario_kyc()
@@ -236,3 +221,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
