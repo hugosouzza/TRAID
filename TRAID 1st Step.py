@@ -121,7 +121,7 @@ def formulario_kyc():
             complete_kyc()
 
 # --------------------------------------------
-#         TEST DE PERFIL DE RIESGO (sin cambios aquí)
+#         TEST DE PERFIL DE RIESGO (REACTIVADO)
 # --------------------------------------------
 def clasificar_perfil(puntaje_total):
     if 10 <= puntaje_total <= 17:
@@ -137,87 +137,82 @@ def clasificar_perfil(puntaje_total):
 
 def formulario_riesgo():
     st.write("## Cuestionario de Perfil de Riesgo")
-    st.info("(Contenido temporal oculto para simplificar)")
-    complete_risk_profile()
 
-# --------------------------------------------
-#                 DASHBOARD
-# --------------------------------------------
-def mostrar_dashboard():
-    st.sidebar.title("TRAID")
-    menu = ["Resumen", "Información del Usuario", "Documentos", "Análisis", "Carteras", "Operaciones", "Propuestas", "Alertas"]
-    opcion = st.sidebar.radio("Ir a:", menu)
-    st.title(opcion)
-    st.write("(Contenido en desarrollo)")
+    preguntas = {
+        "Objetivos de inversión": {
+            "opciones": [
+                "Preservar el capital y proteger mi inversión",
+                "Crecimiento medio asumiendo fluctuaciones moderadas",
+                "Aprovechar oportunidades asumiendo fluctuaciones elevadas",
+                "Crecimiento fuerte asumiendo fluctuaciones muy elevadas y altos riesgos de pérdida"
+            ],
+            "peso": 0.25
+        },
+        "Nivel de pérdidas potenciales": {
+            "opciones": ["Máximo 5%", "Máximo 15%", "Máximo 35%", "Máximo 55%"],
+            "peso": 0.25
+        },
+        "Reacción ante pérdidas": {
+            "opciones": [
+                "Vender todo para evitar más pérdidas",
+                "Vender una parte para limitar las pérdidas",
+                "Mantener la inversión esperando recuperación",
+                "Comprar más aprovechando el precio bajo"
+            ],
+            "peso": 0.15
+        },
+        "Expectativas de rendimiento": {
+            "opciones": [
+                "Menos del 3% (muy bajo riesgo)",
+                "Entre 3% y 6% (moderado)",
+                "Entre 6% y 10% (elevado)",
+                "Más del 10% (muy alto)"
+            ],
+            "peso": 0.15
+        },
+        "Comodidad con la volatilidad": {
+            "opciones": [
+                "Muy incómodo, preferiría estabilidad",
+                "Algo incómodo, pero dispuesto a asumir cierta volatilidad",
+                "Cómodo, entiendo que es parte de invertir a largo plazo",
+                "Muy cómodo, buscaría aprovechar la volatilidad"
+            ],
+            "peso": 0.10
+        },
+        "Conocimiento financiero": {
+            "opciones": ["Nulo", "Bajo", "Medio", "Elevado o Muy elevado"],
+            "peso": 0.02
+        },
+        "Horizonte temporal": {
+            "opciones": ["Menos de 1 año", "Entre 1 y 3 años", "Entre 3 y 5 años", "Más de 5 años"],
+            "peso": 0.02
+        },
+        "Porcentaje de patrimonio invertido": {
+            "opciones": ["Menos del 5%", "Entre el 5% y el 25%", "Entre el 25% y el 50%", "Más del 50%"],
+            "peso": 0.02
+        },
+        "Ingresos anuales": {
+            "opciones": ["Menos de 25,000€", "Entre 25,000€ y 50,000€", "Entre 50,000€ y 100,000€", "Más de 100,000€"],
+            "peso": 0.02
+        },
+        "Necesidades de liquidez": {
+            "opciones": ["Más del 75%", "Entre el 50% y el 75%", "Entre el 25% y el 50%", "Ninguna"],
+            "peso": 0.02
+        }
+    }
 
-# --------------------------------------------
-#                 APP PRINCIPAL
-# --------------------------------------------
-def main():
-    crear_base_datos()
-    if "usuario_autenticado" not in st.session_state:
-        st.session_state.usuario_autenticado = False
-    if "step" not in st.session_state:
-        st.session_state.step = "Start"
+    respuestas = []
+    for pregunta, detalles in preguntas.items():
+        respuesta = st.radio(pregunta, detalles["opciones"])
+        if respuesta:
+            puntaje = (detalles["opciones"].index(respuesta) + 1) * detalles["peso"]
+            respuestas.append(puntaje)
 
-    if st.session_state.usuario_autenticado:
-        mostrar_dashboard()
-    else:
-        if st.session_state.step == "Start":
-            st.markdown("""
-                <div style='text-align: center; margin-top: 10%;'>
-                    <h1 style='font-size: 64px;'>TRAID</h1>
-                    <p style='font-size: 20px;'>Disfruta de una experiencia personalizada de inversión.</p>
-                    <br>
-                    <form>
-                        <input type=\"submit\" value=\"LOG IN\" onclick=\"window.location.href='#login'\" style='width: 200px; height: 45px; font-size: 16px; background-color: black; color: white; border: none; margin-bottom: 10px;'>
-                        <br>
-                        <input type=\"submit\" value=\"SIGN UP\" onclick=\"window.location.href='#signup'\" style='width: 200px; height: 45px; font-size: 16px; background-color: white; color: black; border: 1px solid black;'>
-                    </form>
-                </div>
-            """, unsafe_allow_html=True)
-
-            opcion = st.radio("", ["Login", "Sign Up"], horizontal=True)
-
-            if opcion == "Login":
-                st.subheader("Log In")
-                usuario = st.text_input("DNI / CIF")
-                contrasena = st.text_input("Contraseña", type="password")
-                if st.button("Iniciar Sesión"):
-                    u = verificar_usuario(usuario, contrasena)
-                    if u:
-                        st.session_state.usuario_autenticado = True
-                        st.experimental_rerun()
-                    else:
-                        st.error("Credenciales incorrectas")
-                st.markdown("<p style='font-size: 14px;'><a href='#'>¿Olvidaste tu contraseña?</a></p>", unsafe_allow_html=True)
-
-            elif opcion == "Sign Up":
-                st.subheader("Sign Up")
-                usuario = st.text_input("DNI / CIF")
-                email = st.text_input("Email")
-                contrasena = st.text_input("Contraseña", type="password")
-                confirmar = st.text_input("Confirmar Contraseña", type="password")
-                privacidad = st.checkbox("I have read and understand the Privacy and Cookies Policy")
-
-                if st.button("Crear Cuenta"):
-                    if not privacidad:
-                        st.error("Debes aceptar la política de privacidad para continuar.")
-                    elif contrasena != confirmar:
-                        st.error("Las contraseñas no coinciden")
-                    else:
-                        registrar_usuario(usuario, email, contrasena)
-
-        elif st.session_state.step == "KYC":
-            formulario_kyc()
-
-        elif st.session_state.step == "Risk Profile":
-            formulario_riesgo()
-
-        elif st.session_state.step == "Dashboard":
-            st.session_state.usuario_autenticado = True
-            st.experimental_rerun()
-
-if __name__ == "__main__":
-    main()
-
+    if st.button("Enviar Cuestionario"):
+        if len(respuestas) == len(preguntas):
+            total = round(sum(respuestas) * 10)
+            perfil = clasificar_perfil(total)
+            st.success(f"Tu perfil de riesgo es: {perfil}")
+            complete_risk_profile()
+        else:
+            st.warning("Responde todas las preguntas antes de enviar.")
