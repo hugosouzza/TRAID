@@ -151,31 +151,55 @@ def dashboard():
     ]
     opcion = st.sidebar.radio("Menú", menu)
 
-    # Área inferior izquierda personalizada
-    st.sidebar.markdown("""
-        <div style='position: absolute; bottom: 20px;'>
-            <div style='display: flex; align-items: center;'>
-                <div style='background-color: #FDBA1F; color: white; font-weight: bold; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;'>
-                    {initial}
+    # Área inferior izquierda personalizada (mejorada y sin color de fondo llamativo)
+    st.markdown("""
+        <style>
+            .user-box {
+                position: fixed;
+                bottom: 20px;
+                left: 15px;
+                font-size: 14px;
+                color: #333;
+            }
+            .user-box summary {
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .user-popup {
+                background-color: white;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 6px;
+                width: 200px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            .user-popup hr {
+                margin: 6px 0;
+            }
+            .logout {
+                color: red;
+                background: none;
+                border: none;
+                padding: 0;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        </style>
+        <div class='user-box'>
+            <details>
+                <summary>Hola, {nombre}</summary>
+                <div class='user-popup'>
+                    <div style='font-weight: bold;'>{nombre}</div>
+                    <div style='font-size: 12px; color: #666;'>{email}</div>
+                    <hr>
+                    <div style='margin-bottom: 6px;'>Perfil</div>
+                    <form action='/' method='post'>
+                        <button class='logout' onclick='window.location.reload()'>Cerrar sesión</button>
+                    </form>
                 </div>
-                <div style='margin-left: 10px;'>
-                    <div style='font-weight: bold;'>Hola, {nombre}</div>
-                </div>
-                <div style='margin-left: auto;'>
-                    <details>
-                        <summary style='cursor: pointer;'>⋮</summary>
-                        <div style='background-color: white; border: 1px solid #ddd; padding: 10px; border-radius: 6px; width: 200px;'>
-                            <div style='font-weight: bold;'>{nombre}</div>
-                            <div style='font-size: 12px; color: #666;'>{email}</div>
-                            <hr style='margin: 6px 0;'>
-                            <div style='margin-bottom: 6px;'>Perfil</div>
-                            <button style='color: red; background: none; border: none; padding: 0; font-weight: bold; cursor: pointer;' onclick='window.location.reload()'>Cerrar sesión</button>
-                        </div>
-                    </details>
-                </div>
-            </div>
+            </details>
         </div>
-    """.format(nombre=st.session_state.usuario, email=st.session_state.email, initial=st.session_state.usuario[0].upper()), unsafe_allow_html=True)
+    """.format(nombre=st.session_state.usuario, email=st.session_state.email), unsafe_allow_html=True)
 
     st.title(opcion)
     st.write("(Contenido en desarrollo...)")
