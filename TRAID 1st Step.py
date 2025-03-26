@@ -119,7 +119,6 @@ def formulario_kyc():
 
         if st.button("Finalizar KYC"):
             complete_kyc()
-            st.experimental_rerun()
 
 # --------------------------------------------
 #         TEST DE PERFIL DE RIESGO (sin cambios aquí)
@@ -171,9 +170,9 @@ def main():
                     <p style='font-size: 20px;'>Disfruta de una experiencia personalizada de inversión.</p>
                     <br>
                     <form>
-                        <input type="submit" value="LOG IN" onclick="window.location.href='#login'" style='width: 200px; height: 45px; font-size: 16px; background-color: black; color: white; border: none; margin-bottom: 10px;'>
+                        <input type=\"submit\" value=\"LOG IN\" onclick=\"window.location.href='#login'\" style='width: 200px; height: 45px; font-size: 16px; background-color: black; color: white; border: none; margin-bottom: 10px;'>
                         <br>
-                        <input type="submit" value="SIGN UP" onclick="window.location.href='#signup'" style='width: 200px; height: 45px; font-size: 16px; background-color: white; color: black; border: 1px solid black;'>
+                        <input type=\"submit\" value=\"SIGN UP\" onclick=\"window.location.href='#signup'\" style='width: 200px; height: 45px; font-size: 16px; background-color: white; color: black; border: 1px solid black;'>
                     </form>
                 </div>
             """, unsafe_allow_html=True)
