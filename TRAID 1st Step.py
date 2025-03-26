@@ -31,7 +31,7 @@ def registrar_usuario(usuario, email, contrasena):
     conn = sqlite3.connect("usuarios.db")
     c = conn.cursor()
     try:
-        c.execute("INSERT INTO usuarios (usuario, email, contrasena) VALUES (?, ?, ?)",
+        c.execute("INSERT INTO usuarios (usuario, email, contrasena, kyc_completed, risk_completed) VALUES (?, ?, ?, 0, 0)",
                   (usuario, email, encriptar_contrasena(contrasena)))
         conn.commit()
         st.session_state.email = email
@@ -199,4 +199,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
