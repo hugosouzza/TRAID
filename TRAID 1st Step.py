@@ -138,8 +138,6 @@ def formulario_riesgo():
 
 # ----------------- DASHBOARD -----------------
 def dashboard():
-    st.set_page_config(layout="wide")  # Fondo blanco por defecto
-
     st.sidebar.title("TRAID")
     menu = [
         "Resumen",
@@ -156,17 +154,15 @@ def dashboard():
     st.title(opcion)
     st.write("(Contenido en desarrollo...)")
 
-    # Bloque de usuario abajo a la izquierda (minimalista)
-    if "email" in st.session_state:
-        st.sidebar.markdown("---")
-        with st.sidebar.expander(f"👤 Hola, {st.session_state.get('usuario', 'Usuario')}"):
-            st.write(st.session_state.email)
-            st.write("Perfil")  # De momento vacío
-            cerrar = st.button("Cerrar sesión", key="logout")
-            if cerrar:
-                st.session_state.clear()
-                st.session_state.step = "Inicio"
-                st.experimental_rerun()
+    # BLOQUE USUARIO SIMPLE ABAJO A LA IZQUIERDA
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(f"**👤 Hola, {st.session_state.get('usuario', 'Usuario')}**")
+    st.sidebar.markdown(st.session_state.get("email", ""))
+    if st.sidebar.button("🔴 Cerrar sesión"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.session_state.step = "Inicio"
+        st.experimental_rerun()
 
 # ------------------- INICIO -------------------
 def main():
