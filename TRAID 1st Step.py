@@ -8,7 +8,7 @@ import sqlite3
 import hashlib
 from datetime import date
 
-st.set_page_config(page_title="TRAID", layout="wide")
+st.set_page_config(page_title="TRAID", layout="wide", initial_sidebar_state="expanded")
 
 # ---------------------- DB ----------------------
 def crear_base_datos():
@@ -35,6 +35,7 @@ def registrar_usuario(usuario, email, contrasena):
                   (usuario, email, encriptar_contrasena(contrasena)))
         conn.commit()
         st.session_state.email = email
+        st.session_state.usuario = usuario
         st.session_state.step = "KYC"
     except sqlite3.IntegrityError:
         st.error("El usuario o email ya están registrados.")
@@ -150,6 +151,32 @@ def dashboard():
     ]
     opcion = st.sidebar.radio("Menú", menu)
 
+    # Área inferior izquierda personalizada
+    st.sidebar.markdown("""
+        <div style='position: absolute; bottom: 20px;'>
+            <div style='display: flex; align-items: center;'>
+                <div style='background-color: #FDBA1F; color: white; font-weight: bold; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;'>
+                    {initial}
+                </div>
+                <div style='margin-left: 10px;'>
+                    <div style='font-weight: bold;'>Hola, {nombre}</div>
+                </div>
+                <div style='margin-left: auto;'>
+                    <details>
+                        <summary style='cursor: pointer;'>⋮</summary>
+                        <div style='background-color: white; border: 1px solid #ddd; padding: 10px; border-radius: 6px; width: 200px;'>
+                            <div style='font-weight: bold;'>{nombre}</div>
+                            <div style='font-size: 12px; color: #666;'>{email}</div>
+                            <hr style='margin: 6px 0;'>
+                            <div style='margin-bottom: 6px;'>Perfil</div>
+                            <button style='color: red; background: none; border: none; padding: 0; font-weight: bold; cursor: pointer;' onclick='window.location.reload()'>Cerrar sesión</button>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    """.format(nombre=st.session_state.usuario, email=st.session_state.email, initial=st.session_state.usuario[0].upper()), unsafe_allow_html=True)
+
     st.title(opcion)
     st.write("(Contenido en desarrollo...)")
 
@@ -178,6 +205,7 @@ def main():
                 user = verificar_usuario(usuario, contrasena)
                 if user:
                     st.session_state.email = user[2]
+                    st.session_state.usuario = user[1]
                     st.session_state.step = "Dashboard"
                 else:
                     st.error("Credenciales incorrectas")
@@ -211,5 +239,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
