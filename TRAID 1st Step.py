@@ -12,7 +12,7 @@ st.set_page_config(page_title="TRAID", layout="centered")
 
 # ---------------------- DB ----------------------
 def crear_base_datos():
-    conn = sqlite3.connect("usuarios.db")
+    conn = sqlite3.connect("usuarios_v2.db")
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS usuarios (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +28,7 @@ def encriptar_contrasena(pwd):
     return hashlib.sha256(pwd.encode()).hexdigest()
 
 def registrar_usuario(usuario, email, contrasena):
-    conn = sqlite3.connect("usuarios.db")
+    conn = sqlite3.connect("usuarios_v2.db")
     c = conn.cursor()
     try:
         c.execute("INSERT INTO usuarios (usuario, email, contrasena, kyc_completed, risk_completed) VALUES (?, ?, ?, 0, 0)",
@@ -41,7 +41,7 @@ def registrar_usuario(usuario, email, contrasena):
     conn.close()
 
 def verificar_usuario(usuario, contrasena):
-    conn = sqlite3.connect("usuarios.db")
+    conn = sqlite3.connect("usuarios_v2.db")
     c = conn.cursor()
     c.execute("SELECT * FROM usuarios WHERE usuario = ? AND contrasena = ?", (usuario, encriptar_contrasena(contrasena)))
     user = c.fetchone()
@@ -49,7 +49,7 @@ def verificar_usuario(usuario, contrasena):
     return user
 
 def completar_kyc():
-    conn = sqlite3.connect("usuarios.db")
+    conn = sqlite3.connect("usuarios_v2.db")
     c = conn.cursor()
     c.execute("UPDATE usuarios SET kyc_completed = 1 WHERE email = ?", (st.session_state.email,))
     conn.commit()
@@ -57,7 +57,7 @@ def completar_kyc():
     st.session_state.step = "Riesgo"
 
 def completar_riesgo():
-    conn = sqlite3.connect("usuarios.db")
+    conn = sqlite3.connect("usuarios_v2.db")
     c = conn.cursor()
     c.execute("UPDATE usuarios SET risk_completed = 1 WHERE email = ?", (st.session_state.email,))
     conn.commit()
