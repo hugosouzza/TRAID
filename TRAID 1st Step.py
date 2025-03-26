@@ -155,6 +155,7 @@ def main():
                 <br>
             </div>
         """, unsafe_allow_html=True)
+
         opcion = st.radio("", ["Log In", "Sign Up"], horizontal=True)
 
         if opcion == "Log In":
@@ -164,6 +165,7 @@ def main():
             if st.button("Iniciar Sesión"):
                 user = verificar_usuario(usuario, contrasena)
                 if user:
+                    st.session_state.email = user[2]  # Guardamos el email por si hace falta luego
                     st.session_state.step = "Dashboard"
                 else:
                     st.error("Credenciales incorrectas")
@@ -191,6 +193,3 @@ def main():
         formulario_riesgo()
     elif st.session_state.step == "Dashboard":
         dashboard()
-
-if __name__ == '__main__':
-    main()
