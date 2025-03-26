@@ -216,3 +216,5 @@ def formulario_riesgo():
             complete_risk_profile()
         else:
             st.warning("Responde todas las preguntas antes de enviar.")
+
+
