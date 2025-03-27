@@ -66,19 +66,16 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Redirigir al login
-    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    if st.button("Iniciar sesión"):
-        st.session_state.pantalla = "login"
+    # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
+    if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+        st.session_state.pantalla = "registro"  # Este no hace nada aún
 
-    # Espacio entre botones
+    # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Agregar flecha como indicador visual
-    if st.button("➡ Empecemos a crecer Juntos"):
-        st.session_state.pantalla = "registro"
-
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
+    if st.button("Iniciar sesión", key="login", use_container_width=True):
+        st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
