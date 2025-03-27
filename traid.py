@@ -28,7 +28,7 @@ def verificar_credenciales(usuario_o_email, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_intro.png")  # Asegúrate de que este archivo esté en el directorio correcto
+    image = Image.open("traid_intro.png")  # La imagen de la pantalla de inicio
     st.image(image, use_column_width=True)
 
     st.markdown("""
@@ -52,9 +52,9 @@ def pantalla_inicio():
         st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
-    # Logo pequeño encima del Login
-    image = Image.open("traid_logo.png")  # Asegúrate de que este archivo de logo pequeño esté en el directorio correcto
-    st.image(image, use_column_width=False, width=150)
+    # Logo pequeño encima del Login (mismo logo que en la pantalla de inicio, más pequeño)
+    image = Image.open("traid_intro.png")  # Usamos la misma imagen pero más pequeña
+    st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño que aparece encima del login
 
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
     st.write("Accede con tu email o DNI")
@@ -88,11 +88,11 @@ def pantalla_login():
     # Botones de redes sociales (Google, Facebook, Apple)
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.image("google_logo.png", width=30)  # Asegúrate de tener este archivo de imagen en la misma carpeta
+        st.image("google_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
     with col2:
-        st.image("facebook_logo.png", width=30)  # Asegúrate de tener este archivo de imagen en la misma carpeta
+        st.image("facebook_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
     with col3:
-        st.image("apple_logo.png", width=30)  # Asegúrate de tener este archivo de imagen en la misma carpeta
+        st.image("apple_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
 
     st.markdown("""
         <div style="text-align: center;">
