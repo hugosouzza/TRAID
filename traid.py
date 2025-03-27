@@ -66,45 +66,19 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
-    if st.markdown("""
-        <div style='text-align: center;'>
-            <button style="
-                background-color: #7552F2;
-                color: white;
-                padding: 14px 28px;
-                font-size: 16px;
-                border: none;
-                border-radius: 30px;
-                cursor: pointer;
-                width: 90%;
-                max-width: 300px;
-                margin-bottom: 10px;
-            " onclick="window.location.reload()">Empecemos a crecer Juntos</button>
-        </div>
-    """, unsafe_allow_html=True):
-        st.session_state.pantalla = "registro"  # Este no hace nada aún
+    # Redirigir al login
+    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+    if st.button("Iniciar sesión"):
+        st.session_state.pantalla = "login"
 
-    # Espacio
+    # Espacio entre botones
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
-    if st.markdown("""
-        <div style='text-align: center;'>
-            <button style="
-                background-color: white;
-                color: #7552F2;
-                padding: 14px 28px;
-                font-size: 16px;
-                border: 2px solid #7552F2;
-                border-radius: 30px;
-                cursor: pointer;
-                width: 90%;
-                max-width: 300px;
-            " onclick="window.location.reload()">Iniciar sesión</button>
-        </div>
-    """, unsafe_allow_html=True):
-        st.session_state.pantalla = "login"  # Va al login
+    # Agregar flecha como indicador visual
+    if st.button("➡ Empecemos a crecer Juntos"):
+        st.session_state.pantalla = "registro"
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
