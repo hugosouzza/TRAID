@@ -28,8 +28,8 @@ def verificar_credenciales(usuario_o_email, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
-    st.image(image, use_column_width=True)
+    image = Image.open("traid_intro.png")  # La imagen de la pantalla de inicio
+    st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
 
     st.markdown("""
         <h1 style='text-align: center; font-size: 30px;'>Bienvenido a <span style='color:#7552F2;'>Traid</span>, te estábamos esperando</h1>
@@ -53,7 +53,7 @@ def pantalla_inicio():
 
 def pantalla_login():
     # Logo pequeño encima del Login (mismo logo que en la pantalla de inicio, más pequeño)
-    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
+    image = Image.open("traid_intro.png")  # Usamos la misma imagen pero más pequeña
     st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño que aparece encima del login
 
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
@@ -88,11 +88,11 @@ def pantalla_login():
     # Botones de redes sociales (Google, Facebook, Apple)
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.image("google_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("google_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
     with col2:
-        st.image("facebook_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("facebook_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
     with col3:
-        st.image("apple_logo.png", width=30)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("apple_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
 
     st.markdown("""
         <div style="text-align: center;">
