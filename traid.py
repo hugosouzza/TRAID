@@ -68,43 +68,13 @@ def pantalla_inicio():
     </p>
     """, unsafe_allow_html=True)
 
-    # Botones bonitos
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.markdown("""
-            <div style="text-align:center;">
-                <button onclick="window.location.href='/'" style="
-                    background-color: #7552F2;
-                    color: white;
-                    padding: 12px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    width: 90%;
-                " onclick="return false;">Iniciar sesión</button>
-            </div>
-        """, unsafe_allow_html=True):
-            if st.button("→", key="login"):
-                st.session_state.pantalla = "login"
-
+        if st.button("Iniciar sesión"):
+            st.session_state.pantalla = "login"
     with col2:
-        if st.markdown("""
-            <div style="text-align:center;">
-                <button onclick="window.location.href='/'" style="
-                    background-color: white;
-                    color: #7552F2;
-                    padding: 12px 24px;
-                    border: 2px solid #7552F2;
-                    border-radius: 8px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    width: 90%;
-                " onclick="return false;">Empecemos a crecer juntos</button>
-            </div>
-        """, unsafe_allow_html=True):
-            if st.button("→", key="registro"):
-                st.session_state.pantalla = "registro"
+        if st.button("Empecemos a crecer juntos"):
+            st.session_state.pantalla = "registro"
 
     st.markdown("""
     <div style='text-align: center; margin-top: 30px;'>
@@ -156,6 +126,8 @@ def main():
         pantalla_login()
     elif st.session_state.pantalla == "dashboard":
         dashboard()
+    elif st.session_state.pantalla == "registro":
+        st.info("Aquí irá el registro muy pronto...")
 
 if __name__ == '__main__':
     main()
