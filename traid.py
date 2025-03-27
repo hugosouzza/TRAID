@@ -66,14 +66,16 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botones centrados y con estilo
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-            st.session_state.pantalla = "registro"  # Este no hace nada aún
-    with col2:
-        if st.button("Iniciar sesión", key="login", use_container_width=True):
-            st.session_state.pantalla = "login"  # Este va al login
+    # Botón 1 – REGISTRO
+    if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+        st.session_state.pantalla = "registro"  # No hace nada aún
+
+    # Espacio
+    st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
+
+    # Botón 2 – LOGIN
+    if st.button("Iniciar sesión", key="login", use_container_width=True):
+        st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
@@ -122,3 +124,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
