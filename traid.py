@@ -9,6 +9,32 @@ from PIL import Image
 st.set_page_config(page_title="TRAID", layout="centered")
 
 # ----------------------
+# BASE DE DATOS
+# ----------------------
+def crear_base_datos():
+    conn = sqlite3.connect("usuarios.db")
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            dni TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            usuario TEXT,
+            telefono TEXT,
+            contrasena TEXT NOT NULL,
+            verificado INTEGER DEFAULT 0,
+            kyc_completado INTEGER DEFAULT 0,
+            riesgo_completado INTEGER DEFAULT 0,
+            fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+crear_base_datos()
+
+# ----------------------
 # FUNCIONES AUXILIARES
 # ----------------------
 def encriptar_contrasena(pwd):
@@ -42,7 +68,7 @@ def registrar_usuario(nombre, dni, correo, usuario, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
+    image = Image.open("traid_intro.png")  # La imagen de la pantalla de inicio
     st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
 
     st.markdown("""
@@ -65,9 +91,29 @@ def pantalla_inicio():
     if st.button("Iniciar sesión", key="login", use_container_width=True):
         st.session_state.pantalla = "login"  # Va al login
 
+def pantalla_login():
+    st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
+    st.write("Accede con tu email o DNI")
+
+    usuario_input = st.text_input("Email o DNI")
+    contrasena_input = st.text_input("Contraseña", type="password")
+
+    if st.button("Entrar"):
+        user = verificar_credenciales(usuario_input, contrasena_input)
+        if user:
+            st.success(f"Bienvenido, {user[1]} 👋")
+            st.session_state.pantalla = "dashboard"
+            st.session_state.usuario = user[1]
+            st.session_state.email = user[3]
+        else:
+            st.error("Credenciales incorrectas")
+
+    if st.button("← Volver"):
+        st.session_state.pantalla = "inicio"
+
 def pantalla_registro():
     # Logo pequeño encima del registro
-    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
+    image = Image.open("traid_intro.png")  # Usamos la misma imagen pero más pequeña
     st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño
 
     st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
@@ -89,6 +135,15 @@ def pantalla_registro():
             registrar_usuario(nombre, dni, correo, usuario, contrasena)
 
     if st.button("← Volver"):
+        st.session_state.pantalla = "inicio"
+
+def dashboard():
+    st.title(f"Hola {st.session_state.get('usuario', '')} 👋")
+    st.write("Has iniciado sesión correctamente. Aquí irá tu panel de control 🧠")
+
+    if st.button("Cerrar sesión"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
         st.session_state.pantalla = "inicio"
 
 # ----------------------
