@@ -68,7 +68,7 @@ def registrar_usuario(nombre, dni, correo, usuario, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
+    image = Image.open("traid_logo.png")  # Asegúrate de que esta imagen esté en el directorio correcto
     st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
 
     st.markdown("""
@@ -80,18 +80,22 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón "Empecemos a crecer Juntos"
+    # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
         st.session_state.pantalla = "registro"  # Este no hace nada aún
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botón "Iniciar sesión"
+    # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
     if st.button("Iniciar sesión", key="login", use_container_width=True):
         st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
+    # Logo pequeño encima del login
+    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
+    st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño
+
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
     st.write("Accede con tu email o DNI")
 
