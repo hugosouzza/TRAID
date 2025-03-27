@@ -81,10 +81,14 @@ def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
     st.write("Accede con tu email o DNI")
 
-    usuario_input = st.text_input("Email o DNI")
-    contrasena_input = st.text_input("Contraseña", type="password")
+    # Campo Email/DNI
+    usuario_input = st.text_input("Introduce tu correo o DNI", key="usuario")
 
-    if st.button("Entrar"):
+    # Campo Contraseña
+    contrasena_input = st.text_input("Contraseña", type="password", key="contrasena")
+
+    # Botón "Iniciar sesión"
+    if st.button("Iniciar sesión", key="iniciar_sesion"):
         user = verificar_credenciales(usuario_input, contrasena_input)
         if user:
             st.success(f"Bienvenido, {user[1]} 👋")
@@ -94,7 +98,35 @@ def pantalla_login():
         else:
             st.error("Credenciales incorrectas")
 
-    if st.button("← Volver"):
+    # Opción "No nos olvidamos de ti"
+    st.checkbox("No nos olvidamos de ti", key="recuerdo")
+
+    # Botón "Recuperar contraseña"
+    st.markdown("<p style='text-align: center;'><a href='#' style='color:#7552F2;'>Recuperar Contraseña</a></p>", unsafe_allow_html=True)
+
+    # Espacio entre los botones
+    st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
+
+    # Botones de redes sociales (Google, Facebook, Apple)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.image("assets/google_logo.png", width=30)
+    with col2:
+        st.image("assets/facebook_logo.png", width=30)
+    with col3:
+        st.image("assets/apple_logo.png", width=30)
+
+    st.markdown("""
+        <div style="text-align: center;">
+            <span style="font-size: 12px;">Puedes entrar también con</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Espacio entre los botones
+    st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
+
+    # Botón para ir a la pantalla de inicio
+    if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
 def dashboard():
