@@ -58,31 +58,51 @@ def pantalla_inicio():
     st.image(image, use_column_width=True)
 
     st.markdown("""
-    <h1 style='text-align: center; font-size: 36px;'>Bienvenido a <span style='color:#7552F2;'>Traid</span></h1>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <p style='text-align: center; color: #555; font-size: 16px;'>
-    Invertir sin saber, ahora es posible.<br>
-    Un gusto saludarte desde donde el futuro de tus finanzas está cuidado, sin complicación y fuera de comisiones.
+    <h1 style='text-align: center; font-size: 32px;'>Bienvenido a <span style='color:#7552F2;'>Traid</span>, te estábamos esperando</h1>
+    <p style='text-align: center; font-size: 15px; color: #555;'>
+    <span style='color:#7552F2;'>Invertir sin saber, ahora es posible.</span><br>
+    Bienvenido al futuro de tus finanzas, fuera complicaciones, fuera comisiones. Hola a las <span style='color:#7552F2;'>Inversiones sin estrés</span>.
     </p>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("Iniciar sesión"):
-            st.session_state.pantalla = "login"
-    with col2:
-        if st.button("Empecemos a crecer juntos"):
-            st.session_state.pantalla = "registro"
-
+    # Botón principal
     st.markdown("""
     <div style='text-align: center; margin-top: 30px;'>
-        <span style='height: 10px; width: 10px; background-color: #7552F2; border-radius: 50%; display: inline-block; margin: 0 5px;'></span>
-        <span style='height: 10px; width: 10px; background-color: #ddd; border-radius: 50%; display: inline-block; margin: 0 5px;'></span>
-        <span style='height: 10px; width: 10px; background-color: #ddd; border-radius: 50%; display: inline-block; margin: 0 5px;'></span>
+        <button style="
+            background-color: #7552F2;
+            color: white;
+            padding: 14px 28px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 300px;
+            margin-bottom: 12px;
+        " onclick="window.location.reload()">Empecemos a crecer Juntos</button>
     </div>
     """, unsafe_allow_html=True)
+    if st.button("▶", key="go_signup"):
+        st.session_state.pantalla = "registro"
+
+    # Botón secundario
+    st.markdown("""
+    <div style='text-align: center;'>
+        <button style="
+            background-color: white;
+            color: #7552F2;
+            padding: 14px 28px;
+            font-size: 16px;
+            border: 2px solid #7552F2;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 300px;
+        " onclick="window.location.reload()">Iniciar Sesión</button>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("▶", key="go_login"):
+        st.session_state.pantalla = "login"
 
 def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
