@@ -66,40 +66,14 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón "Empecemos a crecer Juntos" (morado sólido)
-    st.markdown("""
-    <div style='text-align: center;'>
-        <button style="
-            background-color: #7552F2;
-            color: white;
-            padding: 14px 28px;
-            font-size: 16px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 90%;
-            max-width: 300px;
-            margin-bottom: 10px;
-        " onclick="window.location.reload()">Empecemos a crecer Juntos</button>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Botón "Iniciar sesión" (borde morado, fondo blanco)
-    st.markdown("""
-    <div style='text-align: center;'>
-        <button style="
-            background-color: white;
-            color: #7552F2;
-            padding: 14px 28px;
-            font-size: 16px;
-            border: 2px solid #7552F2;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 90%;
-            max-width: 300px;
-        " onclick="window.location.reload()">Iniciar sesión</button>
-    </div>
-    """, unsafe_allow_html=True)
+    # Botones centrados y con estilo
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+            st.session_state.pantalla = "registro"  # Este no hace nada aún
+    with col2:
+        if st.button("Iniciar sesión", key="login", use_container_width=True):
+            st.session_state.pantalla = "login"  # Este va al login
 
 def pantalla_login():
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
