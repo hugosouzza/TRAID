@@ -66,14 +66,14 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón 1 – REGISTRO
+    # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # No hace nada aún
+        st.session_state.pantalla = "registro"  # Este no hace nada aún
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botón 2 – LOGIN
+    # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
     if st.button("Iniciar sesión", key="login", use_container_width=True):
         st.session_state.pantalla = "login"  # Va al login
 
