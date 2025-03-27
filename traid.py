@@ -66,17 +66,19 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón 1: Registro
-    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-    if st.button("Empecemos a crecer Juntos"):
-        st.session_state.pantalla = "registro"
+    # Botones centrados
+    st.markdown("<div style='display: flex; flex-direction: column; align-items: center;'>", unsafe_allow_html=True)
 
-    # Espacio
+    # Botón 1 – REGISTRO (desactivado por ahora)
+    if st.button("Empecemos a crecer Juntos", key="signup"):
+        pass  # No hace nada aún
+
     st.markdown("<div style='margin: 10px;'></div>", unsafe_allow_html=True)
 
-    # Botón 2: Login
-    if st.button("Iniciar sesión"):
+    # Botón 2 – LOGIN (funciona)
+    if st.button("Iniciar sesión", key="login"):
         st.session_state.pantalla = "login"
+
     st.markdown("</div>", unsafe_allow_html=True)
 
 def pantalla_login():
