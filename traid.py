@@ -28,7 +28,7 @@ def verificar_credenciales(usuario_o_email, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
+    image = Image.open("traid_log.png")  # La imagen de la pantalla de inicio
     st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
 
     st.markdown("""
