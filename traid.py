@@ -13,13 +13,11 @@ from PIL import Image
 st.set_page_config(page_title="TRAID", layout="centered")
 
 # ----------------------
-# BASE DE DATOS (Ferrari style)
+# BASE DE DATOS
 # ----------------------
-
 def crear_base_datos():
     conn = sqlite3.connect("usuarios.db")
     c = conn.cursor()
-    
     c.execute('''
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,34 +33,38 @@ def crear_base_datos():
             fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-
     conn.commit()
     conn.close()
 
-crear_base_datos()  # Se ejecuta al abrir la app
+crear_base_datos()
 
 # ----------------------
-# ENCRIPTADO DE CONTRASEÑAS
+# FUNCIONES AUXILIARES
 # ----------------------
-
 def encriptar_contrasena(pwd):
     return hashlib.sha256(pwd.encode()).hexdigest()
 
-# ----------------------
-# PANTALLA DE BIENVENIDA VISUAL
-# ----------------------
+def verificar_credenciales(usuario_o_email, contrasena):
+    conn = sqlite3.connect("usuarios.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM usuarios WHERE dni = ? OR email = ?", (usuario_o_email, usuario_o_email))
+    user = c.fetchone()
+    conn.close()
+    if user and user[6] == encriptar_contrasena(contrasena):
+        return user
+    return None
 
-def main():
-    # Imagen de bienvenida (usa la que subiste como captura)
-    image = Image.open("traid_intro.png")  # Asegúrate de subir esta imagen a tu repo
+# ----------------------
+# PANTALLAS
+# ----------------------
+def pantalla_inicio():
+    image = Image.open("traid_intro.png")
     st.image(image, use_column_width=True)
 
-    # Título
     st.markdown("""
     <h1 style='text-align: center;'>Bienvenido a <span style='color:#7552F2;'>Traid</span></h1>
     """, unsafe_allow_html=True)
 
-    # Subtítulo
     st.markdown("""
     <p style='text-align: center; color: #555; font-size: 16px;'>
     Invertir sin saber, ahora es posible.<br>
@@ -70,23 +72,14 @@ def main():
     </p>
     """, unsafe_allow_html=True)
 
-    # Botones
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.markdown("""
-        <button style='background-color: #7552F2; color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 16px; width: 100%;'>
-            Empecemos a crecer juntos
-        </button>
-        """, unsafe_allow_html=True)
-
+        if st.button("Empecemos a crecer juntos"):
+            st.session_state.pantalla = "registro"
     with col2:
-        st.markdown("""
-        <button style='background-color: white; color: #7552F2; border: 2px solid #7552F2; padding: 12px 24px; border-radius: 5px; font-size: 16px; width: 100%;'>
-            Iniciar sesión
-        </button>
-        """, unsafe_allow_html=True)
+        if st.button("Iniciar sesión"):
+            st.session_state.pantalla = "login"
 
-    # Puntos de navegación (simulados)
     st.markdown("""
     <div style='text-align: center; margin-top: 30px;'>
         <span style='height: 10px; width: 10px; background-color: #7552F2; border-radius: 50%; display: inline-block; margin: 0 5px;'></span>
@@ -94,6 +87,49 @@ def main():
         <span style='height: 10px; width: 10px; background-color: #ddd; border-radius: 50%; display: inline-block; margin: 0 5px;'></span>
     </div>
     """, unsafe_allow_html=True)
+
+def pantalla_login():
+    st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
+    st.write("Accede con tu email o DNI")
+
+    usuario_input = st.text_input("Email o DNI")
+    contrasena_input = st.text_input("Contraseña", type="password")
+
+    if st.button("Entrar"):
+        user = verificar_credenciales(usuario_input, contrasena_input)
+        if user:
+            st.success(f"Bienvenido, {user[1]} 👋")
+            st.session_state.pantalla = "dashboard"
+            st.session_state.usuario = user[1]
+            st.session_state.email = user[3]
+        else:
+            st.error("Credenciales incorrectas")
+
+    if st.button("← Volver"):
+        st.session_state.pantalla = "inicio"
+
+def dashboard():
+    st.title(f"Hola {st.session_state.get('usuario', '')} 👋")
+    st.write("Has iniciado sesión correctamente. Aquí irá tu panel de control 🧠")
+
+    if st.button("Cerrar sesión"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.session_state.pantalla = "inicio"
+
+# ----------------------
+# MAIN
+# ----------------------
+def main():
+    if "pantalla" not in st.session_state:
+        st.session_state.pantalla = "inicio"
+
+    if st.session_state.pantalla == "inicio":
+        pantalla_inicio()
+    elif st.session_state.pantalla == "login":
+        pantalla_login()
+    elif st.session_state.pantalla == "dashboard":
+        dashboard()
 
 if __name__ == '__main__':
     main()
