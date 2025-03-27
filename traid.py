@@ -42,7 +42,7 @@ def registrar_usuario(nombre, dni, correo, usuario, contrasena):
 # PANTALLAS
 # ----------------------
 def pantalla_inicio():
-    image = Image.open("traid_intro.png")  # La imagen de la pantalla de inicio
+    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
     st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
 
     st.markdown("""
@@ -67,7 +67,7 @@ def pantalla_inicio():
 
 def pantalla_registro():
     # Logo pequeño encima del registro
-    image = Image.open("traid_intro.png")  # Usamos la misma imagen pero más pequeña
+    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
     st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño
 
     st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
