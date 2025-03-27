@@ -1,7 +1,3 @@
-# ============================================
-#               PERSONAL PROJECT
-#          TRAID - App de asesoramiento
-# ============================================
 import streamlit as st
 import sqlite3
 import hashlib
@@ -62,7 +58,7 @@ def pantalla_inicio():
     st.image(image, use_column_width=True)
 
     st.markdown("""
-    <h1 style='text-align: center;'>Bienvenido a <span style='color:#7552F2;'>Traid</span></h1>
+    <h1 style='text-align: center; font-size: 36px;'>Bienvenido a <span style='color:#7552F2;'>Traid</span></h1>
     """, unsafe_allow_html=True)
 
     st.markdown("""
@@ -72,13 +68,43 @@ def pantalla_inicio():
     </p>
     """, unsafe_allow_html=True)
 
+    # Botones bonitos
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("Empecemos a crecer juntos"):
-            st.session_state.pantalla = "registro"
+        if st.markdown("""
+            <div style="text-align:center;">
+                <button onclick="window.location.href='/'" style="
+                    background-color: #7552F2;
+                    color: white;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    width: 90%;
+                " onclick="return false;">Iniciar sesión</button>
+            </div>
+        """, unsafe_allow_html=True):
+            if st.button("→", key="login"):
+                st.session_state.pantalla = "login"
+
     with col2:
-        if st.button("Iniciar sesión"):
-            st.session_state.pantalla = "login"
+        if st.markdown("""
+            <div style="text-align:center;">
+                <button onclick="window.location.href='/'" style="
+                    background-color: white;
+                    color: #7552F2;
+                    padding: 12px 24px;
+                    border: 2px solid #7552F2;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    width: 90%;
+                " onclick="return false;">Empecemos a crecer juntos</button>
+            </div>
+        """, unsafe_allow_html=True):
+            if st.button("→", key="registro"):
+                st.session_state.pantalla = "registro"
 
     st.markdown("""
     <div style='text-align: center; margin-top: 30px;'>
@@ -133,5 +159,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
