@@ -67,14 +67,43 @@ def pantalla_inicio():
     """, unsafe_allow_html=True)
 
     # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
-    if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+    if st.markdown("""
+        <div style='text-align: center;'>
+            <button style="
+                background-color: #7552F2;
+                color: white;
+                padding: 14px 28px;
+                font-size: 16px;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                width: 90%;
+                max-width: 300px;
+                margin-bottom: 10px;
+            " onclick="window.location.reload()">Empecemos a crecer Juntos</button>
+        </div>
+    """, unsafe_allow_html=True):
         st.session_state.pantalla = "registro"  # Este no hace nada aún
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
     # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
-    if st.button("Iniciar sesión", key="login", use_container_width=True):
+    if st.markdown("""
+        <div style='text-align: center;'>
+            <button style="
+                background-color: white;
+                color: #7552F2;
+                padding: 14px 28px;
+                font-size: 16px;
+                border: 2px solid #7552F2;
+                border-radius: 30px;
+                cursor: pointer;
+                width: 90%;
+                max-width: 300px;
+            " onclick="window.location.reload()">Iniciar sesión</button>
+        </div>
+    """, unsafe_allow_html=True):
         st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
