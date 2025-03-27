@@ -53,7 +53,7 @@ def pantalla_inicio():
 
 def pantalla_login():
     # Logo pequeño encima del Login
-    image = Image.open("traid_logo_small.png")  # Asegúrate de tener este archivo de logo pequeño
+    image = Image.open("traid_logo.png")  # Asegúrate de tener este archivo de logo pequeño
     st.image(image, use_column_width=False, width=150)
 
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
