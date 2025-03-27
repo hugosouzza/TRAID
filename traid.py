@@ -9,32 +9,6 @@ from PIL import Image
 st.set_page_config(page_title="TRAID", layout="centered")
 
 # ----------------------
-# BASE DE DATOS
-# ----------------------
-def crear_base_datos():
-    conn = sqlite3.connect("usuarios.db")
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            dni TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            usuario TEXT,
-            telefono TEXT,
-            contrasena TEXT NOT NULL,
-            verificado INTEGER DEFAULT 0,
-            kyc_completado INTEGER DEFAULT 0,
-            riesgo_completado INTEGER DEFAULT 0,
-            fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-crear_base_datos()
-
-# ----------------------
 # FUNCIONES AUXILIARES
 # ----------------------
 def encriptar_contrasena(pwd):
@@ -78,6 +52,10 @@ def pantalla_inicio():
         st.session_state.pantalla = "login"  # Va al login
 
 def pantalla_login():
+    # Logo pequeño encima del Login
+    image = Image.open("traid_logo_small.png")  # Asegúrate de tener este archivo de logo pequeño
+    st.image(image, use_column_width=False, width=150)
+
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
     st.write("Accede con tu email o DNI")
 
