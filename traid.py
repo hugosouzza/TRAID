@@ -24,6 +24,14 @@ def verificar_credenciales(usuario_o_email, contrasena):
         return user
     return None
 
+def registrar_usuario(nombre, apellido, dni, email, usuario, contrasena):
+    conn = sqlite3.connect("usuarios.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) VALUES (?, ?, ?, ?, ?)", 
+              (nombre, dni, email, usuario, encriptar_contrasena(contrasena)))
+    conn.commit()
+    conn.close()
+
 # ----------------------
 # PANTALLAS
 # ----------------------
@@ -107,6 +115,30 @@ def pantalla_login():
     if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
+def pantalla_registro():
+    st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Estás a un paso de alcanzar tus metas</p>", unsafe_allow_html=True)
+
+    nombre_completo = st.text_input("Nombre Completo")
+    apellido = st.text_input("Apellido")
+    dni = st.text_input("DNI/CIF")
+    correo = st.text_input("Correo electrónico")
+    nombre_usuario = st.text_input("Nombre de Usuario")
+    contrasena = st.text_input("Contraseña", type="password")
+    repetir_contrasena = st.text_input("Repite la Contraseña", type="password")
+
+    if st.button("Crear Cuenta"):
+        if contrasena == repetir_contrasena:
+            registrar_usuario(nombre_completo, apellido, dni, correo, nombre_usuario, contrasena)
+            st.success("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.")
+            st.session_state.pantalla = "login"
+        else:
+            st.error("Las contraseñas no coinciden")
+
+    # Botón para ir a la pantalla de inicio
+    if st.button("← Volver", key="volver_registro"):
+        st.session_state.pantalla = "inicio"
+
 def dashboard():
     st.title(f"Hola {st.session_state.get('usuario', '')} 👋")
     st.write("Has iniciado sesión correctamente. Aquí irá tu panel de control 🧠")
@@ -130,7 +162,7 @@ def main():
     elif st.session_state.pantalla == "dashboard":
         dashboard()
     elif st.session_state.pantalla == "registro":
-        st.info("Aquí irá el registro muy pronto...")
+        pantalla_registro()
 
 if __name__ == '__main__':
     main()
