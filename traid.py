@@ -47,6 +47,27 @@ def registrar_usuario(nombre, dni, correo, usuario, contrasena):
     except sqlite3.Error as e:
         st.error(f"Error en la base de datos: {e}")
 
+def crear_base_datos():
+    """Crea la base de datos y la tabla 'usuarios' si no existe."""
+    conn = sqlite3.connect("usuarios.db")
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            dni TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            usuario TEXT,
+            contrasena TEXT NOT NULL,
+            verificado INTEGER DEFAULT 0,
+            kyc_completado INTEGER DEFAULT 0,
+            riesgo_completado INTEGER DEFAULT 0,
+            fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
 # ----------------------
 # PANTALLAS
 # ----------------------
@@ -170,6 +191,9 @@ def dashboard():
 # MAIN
 # ----------------------
 def main():
+    # Asegurarnos de que la base de datos se cree al iniciar la app
+    crear_base_datos()
+
     if "pantalla" not in st.session_state:
         st.session_state.pantalla = "inicio"
 
@@ -186,3 +210,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
