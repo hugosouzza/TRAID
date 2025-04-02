@@ -116,6 +116,10 @@ def pantalla_login():
         st.session_state.pantalla = "inicio"
 
 def pantalla_registro():
+    # Logo pequeño encima del registro
+    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
+    st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño
+
     st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center;'>Estás a un paso de alcanzar tus metas</p>", unsafe_allow_html=True)
 
@@ -165,3 +169,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
