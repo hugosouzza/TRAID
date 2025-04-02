@@ -9,6 +9,32 @@ from PIL import Image
 st.set_page_config(page_title="TRAID", layout="centered")
 
 # ----------------------
+# BASE DE DATOS
+# ----------------------
+def crear_base_datos():
+    conn = sqlite3.connect("usuarios.db")
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            dni TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            usuario TEXT,
+            telefono TEXT,
+            contrasena TEXT NOT NULL,
+            verificado INTEGER DEFAULT 0,
+            kyc_completado INTEGER DEFAULT 0,
+            riesgo_completado INTEGER DEFAULT 0,
+            fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+crear_base_datos()
+
+# ----------------------
 # FUNCIONES AUXILIARES
 # ----------------------
 def encriptar_contrasena(pwd):
@@ -24,53 +50,11 @@ def verificar_credenciales(usuario_o_email, contrasena):
         return user
     return None
 
-def registrar_usuario(nombre, dni, correo, usuario, contrasena):
-    try:
-        conn = sqlite3.connect("usuarios.db")
-        c = conn.cursor()
-
-        # Verificamos si el DNI o correo ya existen en la base de datos
-        c.execute("SELECT * FROM usuarios WHERE dni = ? OR email = ?", (dni, correo))
-        if c.fetchone():
-            st.error("El DNI o correo ya están registrados.")
-            return
-
-        # Si no existen, registramos el nuevo usuario
-        c.execute("INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) VALUES (?, ?, ?, ?, ?)", 
-                  (nombre, dni, correo, usuario, encriptar_contrasena(contrasena)))
-        conn.commit()
-        conn.close()
-
-        st.success("¡Cuenta creada con éxito!")
-        st.session_state.pantalla = "verificacion"  # Redirige a la pantalla de verificación después de registrarse
-
-    except sqlite3.Error as e:
-        st.error(f"Error en la base de datos: {e}")
-
-def crear_base_datos():
-    """Crea la base de datos y la tabla 'usuarios' si no existe."""
-    conn = sqlite3.connect("usuarios.db")
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            dni TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            usuario TEXT,
-            contrasena TEXT NOT NULL,
-            verificado INTEGER DEFAULT 0,
-            kyc_completado INTEGER DEFAULT 0,
-            riesgo_completado INTEGER DEFAULT 0,
-            fecha_registro TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
 # ----------------------
 # PANTALLAS
 # ----------------------
+
+# Pantalla de inicio
 def pantalla_inicio():
     image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
     st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
@@ -84,19 +68,20 @@ def pantalla_inicio():
         </p>
     """, unsafe_allow_html=True)
 
-    # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
+    # Botón "Empecemos a crecer Juntos"
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # Este redirige al registro
+        st.session_state.pantalla = "registro"  # Este no hace nada aún
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botón "Iniciar sesión" (fondo blanco, borde morado, texto morado)
+    # Botón "Iniciar sesión"
     if st.button("Iniciar sesión", key="login", use_container_width=True):
         st.session_state.pantalla = "login"  # Va al login
 
+# Pantalla de inicio de sesión
 def pantalla_login():
-    # Logo pequeño encima del Login (mismo logo que en la pantalla de inicio, más pequeño)
+    # Logo pequeño encima del Login
     image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
     st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño que aparece encima del login
 
@@ -151,49 +136,76 @@ def pantalla_login():
     if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
+# Pantalla de registro (empezar)
 def pantalla_registro():
     st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Estás a un paso de alcanzar tus metas</p>", unsafe_allow_html=True)
+    st.write("Estás a un paso de alcanzar tus metas")
 
+    # Campos del formulario de registro
     nombre_completo = st.text_input("Nombre Completo")
     dni = st.text_input("DNI / CIF")
-    correo = st.text_input("Correo electrónico")
+    correo = st.text_input("Correo")
     nombre_usuario = st.text_input("Nombre de Usuario")
     contrasena = st.text_input("Contraseña", type="password")
-    repetir_contrasena = st.text_input("Repite la Contraseña", type="password")
+    repetir_contrasena = st.text_input("Repite tu Contraseña", type="password")
 
-    if st.button("Crear Cuenta"):
-        if contrasena == repetir_contrasena:
-            registrar_usuario(nombre_completo, dni, correo, nombre_usuario, contrasena)
-            st.success("¡Cuenta creada con éxito!")
-            st.session_state.pantalla = "verificacion"  # Redirige a la pantalla de verificación después de registrarse
+    if contrasena != repetir_contrasena:
+        st.error("Las contraseñas no coinciden")
+
+    if st.button("Crear cuenta", key="crear_cuenta"):
+        if nombre_completo and dni and correo and nombre_usuario and contrasena:
+            try:
+                # Guardar en base de datos
+                conn = sqlite3.connect("usuarios.db")
+                c = conn.cursor()
+                c.execute('''
+                    INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) 
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (nombre_completo, dni, correo, nombre_usuario, encriptar_contrasena(contrasena)))
+                conn.commit()
+                conn.close()
+                st.success("Cuenta creada correctamente!")
+                st.session_state.pantalla = "verificacion_numero"
+            except sqlite3.Error as e:
+                st.error(f"Error en la base de datos: {e}")
         else:
-            st.error("Las contraseñas no coinciden")
+            st.error("Por favor, completa todos los campos")
 
-    # Botón para ir a la pantalla de inicio
-    if st.button("← Volver", key="volver_registro"):
-        st.session_state.pantalla = "inicio"
+# Pantalla de verificación de número (simulada)
+def pantalla_verificacion_numero():
+    st.markdown("<h2 style='text-align: center;'>¡Vamos a verificar que eres tú!</h2>", unsafe_allow_html=True)
+    st.write("Se enviará un código de confirmación a tu número para conectarte con la aplicación.")
 
-def pantalla_verificacion():
-    st.markdown("<h2 style='text-align: center;'>Verificación de identidad</h2>", unsafe_allow_html=True)
-    st.write("Esta sección estará vacía por ahora, se añadirá más funcionalidad más tarde.")
+    # Campo para ingresar número
+    telefono_input = st.text_input("Introduce tu número de teléfono", placeholder="+34 123 000 111 222", key="telefono")
 
-def dashboard():
-    st.title(f"Hola {st.session_state.get('usuario', '')} 👋")
-    st.write("Has iniciado sesión correctamente. Aquí irá tu panel de control 🧠")
+    # Botón de continuar
+    if st.button("Continuar", key="continuar_verificacion"):
+        # Simulación del paso de verificación
+        st.session_state.pantalla = "verificacion_codigo"  # Avanzar a la siguiente pantalla
 
-    if st.button("Cerrar sesión"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.session_state.pantalla = "inicio"
+# Pantalla de verificación del código de 4 dígitos
+def pantalla_verificacion_codigo():
+    st.markdown("<h2 style='text-align: center;'>Introduce el código de 4 dígitos que le hemos enviado</h2>", unsafe_allow_html=True)
+    st.write("Código enviado a tu número: +34 123 000 111 222")
+
+    # Campos para los 4 dígitos
+    codigo_input = [st.text_input(f"Digite el número {i+1}", max_chars=1, key=f"codigo_{i}") for i in range(4)]
+
+    # Botón para completar la verificación
+    if st.button("Unite y toma el control de tus finanzas", key="finalizar_verificacion"):
+        # Avanzar a la pantalla Sofia (pantalla de continuación)
+        st.session_state.pantalla = "sofia"
+
+# Pantalla de Sofia
+def pantalla_sofia():
+    st.title("¡Bienvenido a Sofia!")
+    st.write("Esta es la siguiente pantalla después de la verificación de tu número. Aquí irán más detalles más adelante.")
 
 # ----------------------
 # MAIN
 # ----------------------
 def main():
-    # Asegurarnos de que la base de datos se cree al iniciar la app
-    crear_base_datos()
-
     if "pantalla" not in st.session_state:
         st.session_state.pantalla = "inicio"
 
@@ -204,10 +216,13 @@ def main():
     elif st.session_state.pantalla == "dashboard":
         dashboard()
     elif st.session_state.pantalla == "registro":
-        pantalla_registro()  # Esta es la pantalla de registro
-    elif st.session_state.pantalla == "verificacion":
-        pantalla_verificacion()  # Esta es la pantalla de verificación
+        pantalla_registro()
+    elif st.session_state.pantalla == "verificacion_numero":
+        pantalla_verificacion_numero()
+    elif st.session_state.pantalla == "verificacion_codigo":
+        pantalla_verificacion_codigo()
+    elif st.session_state.pantalla == "sofia":
+        pantalla_sofia()
 
 if __name__ == '__main__':
     main()
-
