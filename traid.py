@@ -24,11 +24,11 @@ def verificar_credenciales(usuario_o_email, contrasena):
         return user
     return None
 
-def registrar_usuario(nombre, apellido, dni, email, usuario, contrasena):
+def registrar_usuario(nombre, dni, correo, usuario, contrasena):
     conn = sqlite3.connect("usuarios.db")
     c = conn.cursor()
     c.execute("INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) VALUES (?, ?, ?, ?, ?)", 
-              (nombre, dni, email, usuario, encriptar_contrasena(contrasena)))
+              (nombre, dni, correo, usuario, encriptar_contrasena(contrasena)))
     conn.commit()
     conn.close()
 
@@ -50,7 +50,7 @@ def pantalla_inicio():
 
     # Botón "Empecemos a crecer Juntos" (fondo morado, texto blanco)
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # Este no hace nada aún
+        st.session_state.pantalla = "registro"  # Este redirige al registro
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
@@ -120,8 +120,7 @@ def pantalla_registro():
     st.markdown("<p style='text-align: center;'>Estás a un paso de alcanzar tus metas</p>", unsafe_allow_html=True)
 
     nombre_completo = st.text_input("Nombre Completo")
-    apellido = st.text_input("Apellido")
-    dni = st.text_input("DNI/CIF")
+    dni = st.text_input("DNI / CIF")
     correo = st.text_input("Correo electrónico")
     nombre_usuario = st.text_input("Nombre de Usuario")
     contrasena = st.text_input("Contraseña", type="password")
@@ -129,9 +128,9 @@ def pantalla_registro():
 
     if st.button("Crear Cuenta"):
         if contrasena == repetir_contrasena:
-            registrar_usuario(nombre_completo, apellido, dni, correo, nombre_usuario, contrasena)
+            registrar_usuario(nombre_completo, dni, correo, nombre_usuario, contrasena)
             st.success("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.")
-            st.session_state.pantalla = "login"
+            st.session_state.pantalla = "login"  # Redirige al login después de registrarse
         else:
             st.error("Las contraseñas no coinciden")
 
@@ -162,7 +161,7 @@ def main():
     elif st.session_state.pantalla == "dashboard":
         dashboard()
     elif st.session_state.pantalla == "registro":
-        pantalla_registro()
+        pantalla_registro()  # Esta es la pantalla de registro
 
 if __name__ == '__main__':
     main()
