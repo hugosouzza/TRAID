@@ -25,12 +25,27 @@ def verificar_credenciales(usuario_o_email, contrasena):
     return None
 
 def registrar_usuario(nombre, dni, correo, usuario, contrasena):
-    conn = sqlite3.connect("usuarios.db")
-    c = conn.cursor()
-    c.execute("INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) VALUES (?, ?, ?, ?, ?)", 
-              (nombre, dni, correo, usuario, encriptar_contrasena(contrasena)))
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect("usuarios.db")
+        c = conn.cursor()
+
+        # Verificamos si el DNI o correo ya existen en la base de datos
+        c.execute("SELECT * FROM usuarios WHERE dni = ? OR email = ?", (dni, correo))
+        if c.fetchone():
+            st.error("El DNI o correo ya están registrados.")
+            return
+
+        # Si no existen, registramos el nuevo usuario
+        c.execute("INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) VALUES (?, ?, ?, ?, ?)", 
+                  (nombre, dni, correo, usuario, encriptar_contrasena(contrasena)))
+        conn.commit()
+        conn.close()
+
+        st.success("¡Cuenta creada con éxito!")
+        st.session_state.pantalla = "verificacion"  # Redirige a la pantalla de verificación después de registrarse
+
+    except sqlite3.Error as e:
+        st.error(f"Error en la base de datos: {e}")
 
 # ----------------------
 # PANTALLAS
@@ -116,10 +131,6 @@ def pantalla_login():
         st.session_state.pantalla = "inicio"
 
 def pantalla_registro():
-    # Logo pequeño encima del registro
-    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
-    st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño
-
     st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center;'>Estás a un paso de alcanzar tus metas</p>", unsafe_allow_html=True)
 
@@ -133,14 +144,18 @@ def pantalla_registro():
     if st.button("Crear Cuenta"):
         if contrasena == repetir_contrasena:
             registrar_usuario(nombre_completo, dni, correo, nombre_usuario, contrasena)
-            st.success("¡Cuenta creada con éxito! Ahora puedes iniciar sesión.")
-            st.session_state.pantalla = "login"  # Redirige al login después de registrarse
+            st.success("¡Cuenta creada con éxito!")
+            st.session_state.pantalla = "verificacion"  # Redirige a la pantalla de verificación después de registrarse
         else:
             st.error("Las contraseñas no coinciden")
 
     # Botón para ir a la pantalla de inicio
     if st.button("← Volver", key="volver_registro"):
         st.session_state.pantalla = "inicio"
+
+def pantalla_verificacion():
+    st.markdown("<h2 style='text-align: center;'>Verificación de identidad</h2>", unsafe_allow_html=True)
+    st.write("Esta sección estará vacía por ahora, se añadirá más funcionalidad más tarde.")
 
 def dashboard():
     st.title(f"Hola {st.session_state.get('usuario', '')} 👋")
@@ -166,7 +181,8 @@ def main():
         dashboard()
     elif st.session_state.pantalla == "registro":
         pantalla_registro()  # Esta es la pantalla de registro
+    elif st.session_state.pantalla == "verificacion":
+        pantalla_verificacion()  # Esta es la pantalla de verificación
 
 if __name__ == '__main__':
     main()
-
