@@ -208,7 +208,7 @@ def main():
     elif st.session_state.pantalla == "login":
         pantalla_login()
     elif st.session_state.pantalla == "dashboard":
-        dashboard()
+        pantalla_dashboard()
     elif st.session_state.pantalla == "registro":
         pantalla_registro()
     elif st.session_state.pantalla == "verificacion_numero":
