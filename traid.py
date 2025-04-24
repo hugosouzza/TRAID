@@ -54,6 +54,43 @@ def verificar_credenciales(usuario_o_email, contrasena):
 # PANTALLAS
 # ----------------------
 
+# Pantalla de inicio (Dashboard)
+def pantalla_dashboard():
+    # Mostrar el logo de TRAID
+    image = Image.open("traid_logo.png")  # Asegúrate de tener el logo en la carpeta raíz
+    st.image(image, use_column_width=True)
+
+    # Título del Dashboard
+    st.markdown("""
+        <h2 style='text-align: center;'>Tu Dashboard</h2>
+        <p style='text-align: center;'>Aquí puedes ver toda la información relevante de tus inversiones.</p>
+    """, unsafe_allow_html=True)
+
+    # Crear los 5 módulos vacíos con los íconos
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    with col1:
+        # Icono de "Me" (el logo de usuario)
+        st.image("me_logo.png", width=50)
+    with col2:
+        # Icono de "Noticias"
+        st.image("news_logo.png", width=50)
+    with col3:
+        # Icono de "Portfolio"
+        st.image("portfolio_logo.png", width=50)
+    with col4:
+        # Icono de "Operaciones"
+        st.image("operations_logo.png", width=50)
+    with col5:
+        # Icono de "Sofia"
+        st.image("sofia_logo.png", width=50)
+
+    # Botón para ir al menú de inicio (casita)
+    st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>🏠 Volver al inicio</a></div>", unsafe_allow_html=True)
+
+    # Botón para ir a la pantalla anterior (flecha)
+    st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>← Volver atrás</a></div>", unsafe_allow_html=True)
+
 # Pantalla de inicio
 def pantalla_inicio():
     image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
@@ -70,7 +107,7 @@ def pantalla_inicio():
 
     # Botón "Empecemos a crecer Juntos"
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # Este no hace nada aún
+        st.session_state.pantalla = "registro"  # Redirige a la pantalla de registro
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
@@ -136,72 +173,6 @@ def pantalla_login():
     if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
-# Pantalla de registro (empezar)
-def pantalla_registro():
-    st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
-    st.write("Estás a un paso de alcanzar tus metas")
-
-    # Campos del formulario de registro
-    nombre_completo = st.text_input("Nombre Completo")
-    dni = st.text_input("DNI / CIF")
-    correo = st.text_input("Correo")
-    nombre_usuario = st.text_input("Nombre de Usuario")
-    contrasena = st.text_input("Contraseña", type="password")
-    repetir_contrasena = st.text_input("Repite tu Contraseña", type="password")
-
-    if contrasena != repetir_contrasena:
-        st.error("Las contraseñas no coinciden")
-
-    if st.button("Crear cuenta", key="crear_cuenta"):
-        if nombre_completo and dni and correo and nombre_usuario and contrasena:
-            try:
-                # Guardar en base de datos
-                conn = sqlite3.connect("usuarios.db")
-                c = conn.cursor()
-                c.execute('''
-                    INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) 
-                    VALUES (?, ?, ?, ?, ?)
-                ''', (nombre_completo, dni, correo, nombre_usuario, encriptar_contrasena(contrasena)))
-                conn.commit()
-                conn.close()
-                st.success("Cuenta creada correctamente!")
-                st.session_state.pantalla = "verificacion_numero"
-            except sqlite3.Error as e:
-                st.error(f"Error en la base de datos: {e}")
-        else:
-            st.error("Por favor, completa todos los campos")
-
-# Pantalla de verificación de número (simulada)
-def pantalla_verificacion_numero():
-    st.markdown("<h2 style='text-align: center;'>¡Vamos a verificar que eres tú!</h2>", unsafe_allow_html=True)
-    st.write("Se enviará un código de confirmación a tu número para conectarte con la aplicación.")
-
-    # Campo para ingresar número
-    telefono_input = st.text_input("Introduce tu número de teléfono", placeholder="+34 123 000 111 222", key="telefono")
-
-    # Botón de continuar
-    if st.button("Continuar", key="continuar_verificacion"):
-        # Simulación del paso de verificación
-        st.session_state.pantalla = "verificacion_codigo"  # Avanzar a la siguiente pantalla
-
-# Pantalla de verificación del código de 4 dígitos
-def pantalla_verificacion_codigo():
-    st.markdown("<h2 style='text-align: center;'>Introduce el código de 4 dígitos que le hemos enviado</h2>", unsafe_allow_html=True)
-    st.write("Código enviado a tu número: +34 123 000 111 222")
-
-    # Campos para los 4 dígitos
-    codigo_input = [st.text_input(f"Digite el número {i+1}", max_chars=1, key=f"codigo_{i}") for i in range(4)]
-
-    # Botón para completar la verificación
-    if st.button("Unite y toma el control de tus finanzas", key="finalizar_verificacion"):
-        # Avanzar a la pantalla Sofia (pantalla de continuación)
-        st.session_state.pantalla = "sofia"
-
-# Pantalla de Sofia
-def pantalla_sofia():
-    st.title("¡Bienvenido a Sofia!")
-    st.write("Esta es la siguiente pantalla después de la verificación de tu número. Aquí irán más detalles más adelante.")
-
 # ----------------------
 # MAIN
 # ----------------------
@@ -214,15 +185,9 @@ def main():
     elif st.session_state.pantalla == "login":
         pantalla_login()
     elif st.session_state.pantalla == "dashboard":
-        dashboard()
+        pantalla_dashboard()  # Mostrar la pantalla de Dashboard
     elif st.session_state.pantalla == "registro":
-        pantalla_registro()
-    elif st.session_state.pantalla == "verificacion_numero":
-        pantalla_verificacion_numero()
-    elif st.session_state.pantalla == "verificacion_codigo":
-        pantalla_verificacion_codigo()
-    elif st.session_state.pantalla == "sofia":
-        pantalla_sofia()
+        pantalla_registro()  # Mostrar la pantalla de Registro
 
 if __name__ == '__main__':
     main()
