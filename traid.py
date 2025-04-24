@@ -70,7 +70,7 @@ def pantalla_inicio():
 
     # Botón "Empecemos a crecer Juntos"
     if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # Este no hace nada aún
+        st.session_state.pantalla = "registro"  # Redirige a la pantalla de registro
 
     # Espacio
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
@@ -136,40 +136,34 @@ def pantalla_login():
     if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
-# Pantalla de registro (empezar)
-def pantalla_registro():
-    st.markdown("<h2 style='text-align: center;'>¡Creemos tu cuenta!</h2>", unsafe_allow_html=True)
-    st.write("Estás a un paso de alcanzar tus metas")
+# Pantalla de Sofia (Chat Interactivo KYC)
+def pantalla_sofia():
+    st.markdown("<h2 style='text-align: center; color:#7552F2;'>¡Hola! Soy Sofia, tu nueva asesora financiera. ¡Vamos por esas metas!</h2>", unsafe_allow_html=True)
+    st.write("Voy a hacerte unas preguntas para poder ayudarte mejor. Todo es muy sencillo y rápido.")
 
-    # Campos del formulario de registro
-    nombre_completo = st.text_input("Nombre Completo")
-    dni = st.text_input("DNI / CIF")
-    correo = st.text_input("Correo")
-    nombre_usuario = st.text_input("Nombre de Usuario")
-    contrasena = st.text_input("Contraseña", type="password")
-    repetir_contrasena = st.text_input("Repite tu Contraseña", type="password")
+    # Preguntas del KYC para persona física
+    nombre_completo = st.text_input("¿Cuál es tu nombre completo?")
+    dni = st.text_input("¿Cuál es tu DNI/CIF?")
+    correo = st.text_input("¿Cuál es tu correo electrónico?")
+    situacion_laboral = st.text_input("¿Cuál es tu ocupación o situación laboral?")
+    ingresos_mensuales = st.text_input("¿Cuál es tu ingreso mensual aproximado?")
 
-    if contrasena != repetir_contrasena:
-        st.error("Las contraseñas no coinciden")
-
-    if st.button("Crear cuenta", key="crear_cuenta"):
-        if nombre_completo and dni and correo and nombre_usuario and contrasena:
-            try:
-                # Guardar en base de datos
-                conn = sqlite3.connect("usuarios.db")
-                c = conn.cursor()
-                c.execute('''
-                    INSERT INTO usuarios (nombre, dni, email, usuario, contrasena) 
-                    VALUES (?, ?, ?, ?, ?)
-                ''', (nombre_completo, dni, correo, nombre_usuario, encriptar_contrasena(contrasena)))
-                conn.commit()
-                conn.close()
-                st.success("Cuenta creada correctamente!")
-                st.session_state.pantalla = "verificacion_numero"
-            except sqlite3.Error as e:
-                st.error(f"Error en la base de datos: {e}")
+    # Botón de continuar al siguiente paso
+    if st.button("Continuar", key="continuar_sofia"):
+        if nombre_completo and dni and correo and situacion_laboral and ingresos_mensuales:
+            # Guardamos los datos en la base de datos
+            conn = sqlite3.connect("usuarios.db")
+            c = conn.cursor()
+            c.execute('''
+                INSERT INTO usuarios (nombre, dni, email, telefono) 
+                VALUES (?, ?, ?, ?)
+            ''', (nombre_completo, dni, correo, situacion_laboral))
+            conn.commit()
+            conn.close()
+            st.success("¡Datos guardados correctamente! Vamos a continuar.")
+            st.session_state.pantalla = "verificacion_numero"  # Avanzamos a la siguiente pantalla
         else:
-            st.error("Por favor, completa todos los campos")
+            st.error("Por favor, completa todos los campos.")
 
 # Pantalla de verificación de número (simulada)
 def pantalla_verificacion_numero():
