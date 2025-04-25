@@ -6,7 +6,7 @@ from PIL import Image
 # ----------------------
 # CONFIGURACIÓN
 # ----------------------
-st.set_page_config(page_title="TRAID", layout="centered")
+st.set_page_config(page_title="TRAID", layout="wide")
 
 # ----------------------
 # BASE DE DATOS
@@ -56,82 +56,70 @@ def verificar_credenciales(usuario_o_email, contrasena):
 
 # Pantalla de inicio (Dashboard)
 def pantalla_dashboard():
-    # Mostrar el logo de TRAID
-    image = Image.open("traid_logo.png")  # Asegúrate de tener el logo en la carpeta raíz
+    image = Image.open("traid_logo.png")
     st.image(image, use_column_width=True)
 
-    # Título del Dashboard
     st.markdown("""
         <h2 style='text-align: center;'>Tu Dashboard</h2>
         <p style='text-align: center;'>Aquí puedes ver toda la información relevante de tus inversiones.</p>
     """, unsafe_allow_html=True)
 
-    # Crear los 5 módulos vacíos con los íconos
     col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
-        # Icono de "Me" (el logo de usuario)
         st.image("me_logo.png", width=50)
     with col2:
-        # Icono de "Noticias"
         st.image("news_logo.png", width=50)
     with col3:
-        # Icono de "Portfolio"
         st.image("portfolio_logo.png", width=50)
     with col4:
-        # Icono de "Operaciones"
         st.image("operations_logo.png", width=50)
     with col5:
-        # Icono de "Sofia"
         st.image("sofia_logo.png", width=50)
 
-    # Botón para ir al menú de inicio (casita)
     st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>🏠 Volver al inicio</a></div>", unsafe_allow_html=True)
-
-    # Botón para ir a la pantalla anterior (flecha)
     st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>← Volver atrás</a></div>", unsafe_allow_html=True)
 
 # Pantalla de inicio
+
 def pantalla_inicio():
-    image = Image.open("traid_logo.png")  # La imagen de la pantalla de inicio
-    st.image(image, use_column_width=True)  # Ajuste para que ocupe el ancho total
+    col1, col2 = st.columns([1, 2])
 
-    st.markdown("""
-        <h1 style='text-align: center; font-size: 30px;'>Bienvenido a <span style='color:#7552F2;'>Traid</span>, te estábamos esperando</h1>
-        <p style='text-align: center; color: #555; font-size: 16px;'>
-        <span style='color:#7552F2;'>Invertir sin saber, ahora es posible.</span><br>
-        Bienvenido al futuro de tus finanzas, fuera complicaciones, fuera comisiones.<br>
-        Hola a las <span style='color:#7552F2;'>Inversiones sin estrés</span>.
-        </p>
-    """, unsafe_allow_html=True)
+    with col1:
+        image = Image.open("traid_logo.png")
+        st.image(image, use_column_width=True)
 
-    # Botón "Empecemos a crecer Juntos"
-    if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
-        st.session_state.pantalla = "registro"  # Redirige a la pantalla de registro
+    with col2:
+        st.markdown("""
+            <div style='padding: 20px 40px;'>
+                <h1 style='font-size: 36px; color: #333;'>Bienvenido a <span style='color:#7552F2;'>Traid</span>, te estábamos esperando</h1>
+                <p style='font-size: 18px; color: #555;'>
+                    <span style='color:#7552F2;'>Invertir sin saber, ahora es posible.</span><br>
+                    Bienvenido al futuro de tus finanzas, fuera complicaciones, fuera comisiones.<br>
+                    Hola a las <span style='color:#7552F2;'>Inversiones sin estrés</span>.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
-    # Espacio
-    st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
+        if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+            st.session_state.pantalla = "registro"
 
-    # Botón "Iniciar sesión"
-    if st.button("Iniciar sesión", key="login", use_container_width=True):
-        st.session_state.pantalla = "login"  # Va al login
+        st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
+
+        if st.button("Iniciar sesión", key="login", use_container_width=True):
+            st.session_state.pantalla = "login"
 
 # Pantalla de inicio de sesión
 def pantalla_login():
-    # Logo pequeño encima del Login
-    image = Image.open("traid_logo.png")  # Usamos la misma imagen pero más pequeña
-    st.image(image, use_column_width=False, width=150)  # Este es el logo pequeño que aparece encima del login
+    image = Image.open("traid_logo.png")
+    st.image(image, use_column_width=False, width=150)
 
     st.markdown("<h2 style='text-align: center;'>Iniciar sesión</h2>", unsafe_allow_html=True)
     st.write("Accede con tu email o DNI")
 
-    # Campo Email/DNI
     usuario_input = st.text_input("Introduce tu correo o DNI", key="usuario")
-
-    # Campo Contraseña
     contrasena_input = st.text_input("Contraseña", type="password", key="contrasena")
 
-    # Botón "Iniciar sesión"
     if st.button("Iniciar sesión", key="iniciar_sesion"):
         user = verificar_credenciales(usuario_input, contrasena_input)
         if user:
@@ -142,23 +130,18 @@ def pantalla_login():
         else:
             st.error("Credenciales incorrectas")
 
-    # Opción "No nos olvidamos de ti"
     st.checkbox("No nos olvidamos de ti", key="recuerdo")
 
-    # Botón "Recuperar contraseña"
     st.markdown("<p style='text-align: center;'><a href='#' style='color:#7552F2;'>Recuperar Contraseña</a></p>", unsafe_allow_html=True)
-
-    # Espacio entre los botones
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botones de redes sociales (Google, Facebook, Apple)
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.image("google_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("google_logo.png", width=50)
     with col2:
-        st.image("facebook_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("facebook_logo.png", width=50)
     with col3:
-        st.image("apple_logo.png", width=50)  # Asegúrate de que estas imágenes estén en el mismo directorio
+        st.image("apple_logo.png", width=50)
 
     st.markdown("""
         <div style="text-align: center;">
@@ -166,10 +149,8 @@ def pantalla_login():
         </div>
     """, unsafe_allow_html=True)
 
-    # Espacio entre los botones
     st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
 
-    # Botón para ir a la pantalla de inicio
     if st.button("← Volver", key="volver"):
         st.session_state.pantalla = "inicio"
 
@@ -185,9 +166,9 @@ def main():
     elif st.session_state.pantalla == "login":
         pantalla_login()
     elif st.session_state.pantalla == "dashboard":
-        pantalla_dashboard()  # Mostrar la pantalla de Dashboard
+        pantalla_dashboard()
     elif st.session_state.pantalla == "registro":
-        pantalla_registro()  # Mostrar la pantalla de Registro
+        pantalla_registro()
 
 if __name__ == '__main__':
     main()
