@@ -84,45 +84,56 @@ def pantalla_dashboard():
 def pantalla_inicio():
     st.markdown("""
         <style>
-            .titulo-principal {
-                font-size: 36px;
-                font-weight: bold;
-                color: #222;
-                text-align: center;
-            }
-            .texto-secundario {
-                font-size: 16px;
-                color: #555;
-                text-align: center;
-                max-width: 500px;
-                margin: 0 auto 30px auto;
-            }
-            .boton-container {
+            .logo {
                 display: flex;
                 justify-content: center;
-                gap: 30px;
+                margin-top: 60px;
+                margin-bottom: 30px;
+            }
+            .titulo {
+                text-align: center;
+                font-size: 40px;
+                font-weight: bold;
+                color: #222222;
+                margin-bottom: 10px;
+            }
+            .descripcion {
+                text-align: center;
+                color: #666666;
+                font-size: 16px;
+                line-height: 1.6;
+                max-width: 600px;
+                margin: 0 auto 30px auto;
+            }
+            .botones {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
                 margin-top: 20px;
             }
             .stButton>button {
                 background-color: #7552F2;
                 color: white;
-                padding: 10px 30px;
                 border: none;
-                border-radius: 30px;
-                font-weight: 600;
+                border-radius: 25px;
+                padding: 12px 30px;
                 font-size: 14px;
+                font-weight: 600;
             }
         </style>
     """, unsafe_allow_html=True)
 
-    st.image("traidora_logo2.png", width=80)
-
-    st.markdown("<div class='titulo-principal'>Bienvenido a <span style='color:#7552F2;'>Traid</span></div>", unsafe_allow_html=True)
-
     st.markdown("""
-        <div class='texto-secundario'>
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/tu_usuario/tu_repo/main/traidora_logo2.png" width="70">
+        </div>
+        <div class="titulo">
+            Bienvenido a <span style="color:#7552F2">Traid</span>
+        </div>
+        <div class="descripcion">
             Invertir sin saber, ahora es posible.<br>
-            Un gusto saludarte desde donde el futuro de tus finanzas está cuidado, sin complicación y fuera de comisiones.
+            Un gusto saludarte desde donde el futuro de tus finanzas está cuidado,<br>
+            sin complicación y fuera de comisiones.
         </div>
     """, unsafe_allow_html=True)
 
