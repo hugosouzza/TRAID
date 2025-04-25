@@ -6,7 +6,7 @@ from PIL import Image
 # ----------------------
 # CONFIGURACIÓN
 # ----------------------
-st.set_page_config(page_title="TRAID", layout="wide")
+st.set_page_config(page_title="TRAID", layout="centered")
 
 # ----------------------
 # BASE DE DATOS
@@ -80,33 +80,58 @@ def pantalla_dashboard():
     st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>🏠 Volver al inicio</a></div>", unsafe_allow_html=True)
     st.markdown("<div style='text-align: center;'><a href='#' style='color:#7552F2;'>← Volver atrás</a></div>", unsafe_allow_html=True)
 
-# Pantalla de inicio
-
+# Pantalla de inicio con rediseño visual
 def pantalla_inicio():
-    col1, col2 = st.columns([1, 2])
+    st.markdown("""
+        <style>
+            .titulo-principal {
+                font-size: 36px;
+                font-weight: bold;
+                color: #222;
+                text-align: center;
+            }
+            .texto-secundario {
+                font-size: 16px;
+                color: #555;
+                text-align: center;
+                max-width: 500px;
+                margin: 0 auto 30px auto;
+            }
+            .boton-container {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                margin-top: 20px;
+            }
+            .stButton>button {
+                background-color: #7552F2;
+                color: white;
+                padding: 10px 30px;
+                border: none;
+                border-radius: 30px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
+    st.image("traidora_logo2.png", width=80)
+
+    st.markdown("<div class='titulo-principal'>Bienvenido a <span style='color:#7552F2;'>Traid</span></div>", unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class='texto-secundario'>
+            Invertir sin saber, ahora es posible.<br>
+            Un gusto saludarte desde donde el futuro de tus finanzas está cuidado, sin complicación y fuera de comisiones.
+        </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1])
     with col1:
-        image = Image.open("traid_logo.png")
-        st.image(image, use_column_width=True)
-
-    with col2:
-        st.markdown("""
-            <div style='padding: 20px 40px;'>
-                <h1 style='font-size: 36px; color: #333;'>Bienvenido a <span style='color:#7552F2;'>Traid</span>, te estábamos esperando</h1>
-                <p style='font-size: 18px; color: #555;'>
-                    <span style='color:#7552F2;'>Invertir sin saber, ahora es posible.</span><br>
-                    Bienvenido al futuro de tus finanzas, fuera complicaciones, fuera comisiones.<br>
-                    Hola a las <span style='color:#7552F2;'>Inversiones sin estrés</span>.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        if st.button("Empecemos a crecer Juntos", key="signup", use_container_width=True):
+        if st.button("Empecemos a crecer juntos", key="signup"):
             st.session_state.pantalla = "registro"
-
-        st.markdown("<div style='margin: 20px;'></div>", unsafe_allow_html=True)
-
-        if st.button("Iniciar sesión", key="login", use_container_width=True):
+    with col2:
+        if st.button("Iniciar sesión", key="login"):
             st.session_state.pantalla = "login"
 
 # Pantalla de inicio de sesión
@@ -172,3 +197,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
